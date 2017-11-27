@@ -108,27 +108,131 @@ MyArray.prototype.lastIndexOf = function(element) {
   return -1;
 };
 
-MyArray.prototype.includes = function(element) {};
+MyArray.prototype.includes = function(element) {
+  return this.indexOf(element) !== -1;
+};
 
-MyArray.prototype.find = function(fn) {};
+MyArray.prototype.find = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return undefined;
+  }
+  let currElement = null;
+  for (let i = 0; i < this.size; i++) {
+    currElement = this.elements.get(i);
+    if (fn(currElement)) {
+      return currElement;
+    }
+  }
+};
 
-MyArray.prototype.findIndex = function(fn) {};
+MyArray.prototype.findIndex = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return -1;
+  }
+  let currElement = null;
+  for (let i = 0; i < this.size; i++) {
+    currElement = this.elements.get(i);
+    if (fn(currElement)) {
+      return i;
+    }
+  }
+  return -1;
+};
 
-MyArray.prototype.equals = function(other) {};
+MyArray.prototype.equals = function(other) {
+  if (!other) {
+    return false;
+  }
+  if (this.size !== other.length()) {
+    return false;
+  }
+  for (let i = 0; i < this.size; i++) {
+    if (this.elements.get(i) !== other.get(i)) {
+      return false;
+    }
+  }
+  return true;
+};
 
-MyArray.prototype.forEach = function(fn) {};
+MyArray.prototype.forEach = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return;
+  }
+  for (let i = 0; i < this.size; i++) {
+    fn(this.elements.get(i), i);
+  }
+};
 
-MyArray.prototype.join = function(separator) {};
+MyArray.prototype.join = function(separator) {
+  if (separator === undefined) {
+    separator = ",";
+  }
+  let outputString = "";
+  for (let i = 0; i < this.size; i++) {
+    if (i === this.size - 1) {
+      outputString += this.elements.get(i);
+    } else {
+      outputString += this.elements.get(i) + separator;
+    }
+  }
+  return outputString;
+};
 
-MyArray.prototype.toString = function() {};
+MyArray.prototype.toString = function() {
+  return this.join();
+};
 
-MyArray.prototype.map = function(fn) {};
+MyArray.prototype.map = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return this;
+  }
+  const newArr = new MyArray(this.size);
+  for (let i = 0; i < this.size; i++) {
+    newArr.set(i, fn(this.elements.get(i)));
+  }
+  return newArr;
+};
 
-MyArray.prototype.filter = function(fn) {};
+MyArray.prototype.filter = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return this;
+  }
+  const newArr = new MyArray(this.size);
+  let currElement = null;
+  for (let i = 0; i < this.size; i++) {
+    currElement = this.elements.get(i);
+    if (fn(currElement)) {
+      newArr.push(currElement);
+    }
+  }
+  return newArr;
+};
 
-MyArray.prototype.some = function(fn) {};
+MyArray.prototype.some = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return false;
+  }
+  for (let i = 0; i < this.size; i++) {
+    currElement = this.elements.get(i);
+    if (fn(currElement)) {
+      return true;
+    }
+  }
+  return false;
+};
 
-MyArray.prototype.every = function(fn) {};
+MyArray.prototype.every = function(fn) {
+  if (!fn || typeof fn !== "function") {
+    return false;
+  }
+  for (let i = 0; i < this.size; i++) {
+    currElement = this.elements.get(i);
+    if (!fn(currElement)) {
+      return false;
+    }
+  }
+  return true;
+};
 
 MyArray.prototype.fill = function(value, start, end) {};
 
