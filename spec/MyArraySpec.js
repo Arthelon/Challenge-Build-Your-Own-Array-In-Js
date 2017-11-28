@@ -716,6 +716,7 @@ describe("MyArray", function() {
         array.splice(2, 0, 42, "a");
 
         var expected = MyArray.of("a", 5, 42, "a", "42", "hello", 77);
+        console.log(array.toString());
         expect(array.equals(expected)).toEqual(true);
       });
     }

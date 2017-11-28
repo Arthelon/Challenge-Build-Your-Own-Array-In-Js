@@ -234,14 +234,76 @@ MyArray.prototype.every = function(fn) {
   return true;
 };
 
-MyArray.prototype.fill = function(value, start, end) {};
+MyArray.prototype.fill = function(value, start, end) {
+  if (!start) {
+    start = 0;
+  }
+  if (!end) {
+    end = this.size;
+  }
+  for (let i = start; i < end; i++) {
+    this.elements.set(i, value);
+  }
+};
 
-MyArray.prototype.reverse = function() {};
+MyArray.prototype.reverse = function() {
+  let swapped = null;
+  for (let i = 0; i < Math.floor(this.size / 2); i++) {
+    swapped = this.elements.get(i);
+    this.elements.set(i, this.elements.get(this.size - 1 - i));
+    this.elements.set(this.size - 1 - i, swapped);
+  }
+};
 
-MyArray.prototype.shift = function() {};
+MyArray.prototype.shift = function() {
+  if (!this.size) {
+    return undefined;
+  }
+  const firstElem = this.elements.get(0);
+  this.size--;
+  for (let i = 0; i < this.size; i++) {
+    this.elements.set(i, this.elements.get(i + 1));
+  }
+  this.elements.set(this.size, undefined);
+  return firstElem;
+};
 
-MyArray.prototype.unshift = function(element) {};
+MyArray.prototype.unshift = function(element) {
+  if (this.size >= this.elements.length) {
+    this.elements = grow(this.size + 1, this.elements);
+  }
+  let prevElem = this.elements.get(0);
+  let nextElem = null;
+  for (let i = 0; i < this.size; i++) {
+    nextElem = this.elements.get(i + 1);
+    this.elements.set(i + 1, prevElem);
+    prevElem = nextElem;
+  }
+  this.elements.set(0, element);
+  this.size++;
+};
 
-MyArray.prototype.slice = function(start, end) {};
+MyArray.prototype.slice = function(start, end) {
+  if (!start) {
+    start = 0;
+  }
+  if (!end) {
+    end = this.size;
+  }
+  const newSize = end - start;
+  let slicedArr = new MyArray(newSize);
+  for (let i = 0; i < newSize; i++) {
+    slicedArr.set(i, this.elements.get(start + i));
+  }
+  return slicedArr;
+};
 
-MyArray.prototype.splice = function(start, deleteCount) {};
+MyArray.prototype.splice = function(start, deleteCount, ...items) {
+  if (deleteCount === undefined) {
+    deleteCount = this.size - start;
+  }
+  let firstPart = this.slice(0, start);
+  let secondPart = this.slice(start + deleteCount);
+  this.elements = firstPart.concat(MyArray.of(...items)).concat(secondPart);
+  this.size = this.size - deleteCount + items.length;
+};
